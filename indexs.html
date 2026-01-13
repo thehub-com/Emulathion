@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5">
+    <title>Game Boost Pro - Ускоритель игр</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        /* ЗАСТАВКА */
+        #start-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .logo-icon {
+            font-size: 60px;
+            color: #667eea;
+        }
+        
+        #start-title {
+            font-size: 32px;
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+        
+        .features {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        #start-btn {
+            padding: 20px 50px;
+            font-size: 20px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .disclaimer {
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            text-align: center;
+            margin-top: 30px;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+        
+        /* ОСНОВНОЙ ЭКРАН */
+        #main-screen {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-title {
+            font-size: 24px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .games-list {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .game-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+        }
+        
+        .game-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .game-info {
+            flex: 1;
+        }
+        
+        .game-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .game-stats {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .cheat-toggle {
+            width: 60px;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .cheat-toggle.active {
+            background: #4CAF50;
+        }
+        
+        .toggle-circle {
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+        
+        .cheat-toggle.active .toggle-circle {
+            left: 32px;
+        }
+        
+        .boost-panel {
+            background: white;
+            margin: 20px;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        
+        .boost-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .boost-slider {
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            border-radius: 20px;
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        .slider-handle {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 25px;
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .boost-value {
+            text-align: center;
+            font-size: 48px;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .apply-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* ЭКРАН ВЗЛОМА */
+        #hack-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #0f0;
+            z-index: 10001;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* ПАНЕЛЬ УДАЛЕНИЯ ФАЙЛОВ */
+        #file-delete {
+            position: relative;
+            width: 100%;
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            font-size: 14px;
+            border-bottom: 3px solid #f00;
+            height: 80px;
+            overflow-y: scroll;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 5px #0f0;
+            scrollbar-width: none;
+        }
+        
+        #file-delete::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .terminal-line {
+            color: #0f0;
+            margin: 4px 0;
+            white-space: nowrap;
+            font-weight: bold;
+            animation: textGlow 2s infinite alternate;
+            font-size: 12px;
+        }
+        
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 3px #0f0, 0 0 5px #0f0; }
+            100% { text-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+        }
+        
+        .critical-line {
+            color: #f00;
+            font-size: 14px;
+            text-shadow: 0 0 8px #f00;
+            animation: criticalPulse 0.5s infinite alternate;
+        }
+        
+        @keyframes criticalPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        
+        .hack-header {
+            background: #111;
+            padding: 15px;
+            border-bottom: 2px solid #f00;
+            font-size: 18px;
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .terminal {
+            padding: 15px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .terminal-line {
+            animation: textTyping 3s steps(40, end);
+            margin-bottom: 8px;
+        }
+        
+        .terminal-line.error {
+            color: #f00;
+            animation: blink 1s infinite;
+        }
+        
+        .terminal-line.warning {
+            color: #ff0;
+        }
+        
+        .terminal-line.success {
+            color: #0f0;
+            font-weight: bold;
+        }
+        
+        @keyframes textTyping {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .hack-progress {
+            margin: 20px 15px;
+            height: 15px;
+            background: #222;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f00, #ff0);
+            width: 0%;
+            transition: width 2s;
+        }
+        
+        .game-hacked {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #0f0;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px;
+            text-align: center;
+        }
+        
+        .hacked-title {
+            color: #0f0;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .hacked-message {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .continue-btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* ОСНОВНОЙ ЭКРАН УГРОЗЫ */
+        #main-hack-screen {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            background: #000;
+            color: #0f0;
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        #content {
+            padding: 20px;
+            padding-top: 100px;
+            text-align: center;
+        }
+        
+        #status {
+            font-size: 22px;
+            color: #ff3300;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff3300;
+            animation: shake 0.8s infinite, colorShift 5s infinite;
+            font-weight: bold;
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            50% { transform: translateX(0); }
+            75% { transform: translateX(3px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes colorShift {
+            0% { color: #ff3300; }
+            25% { color: #ffff00; }
+            50% { color: #ff00ff; }
+            75% { color: #00ffff; }
+            100% { color: #ff3300; }
+        }
+        
+        #timer-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #33ff00;
+            border-radius: 12px;
+            box-shadow: 0 0 30px #33ff00;
+            animation: borderPulse 3s infinite;
+        }
+        
+        @keyframes borderPulse {
+            0%, 100% { 
+                border-color: #33ff00;
+                box-shadow: 0 0 30px #33ff00;
+            }
+            50% { 
+                border-color: #0066ff;
+                box-shadow: 0 0 50px #0066ff;
+            }
+        }
+        
+        #timer-label {
+            color: #ffff00;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        #timer {
+            font-size: 48px;
+            color: #33ff00;
+            text-shadow: 0 0 15px #33ff00;
+            font-family: monospace;
+            letter-spacing: 5px;
+            font-weight: bold;
+            animation: timerGlitch 15s infinite;
+        }
+        
+        @keyframes timerGlitch {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scale(1.02); }
+            31% { transform: scale(1); }
+            65% { 
+                transform: scale(0.98);
+                opacity: 0.8;
+            }
+            66% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .main-btn {
+            padding: 20px;
+            font-size: 18px;
+            background: linear-gradient(45deg, #000, #222);
+            color: #33ff00;
+            border: 3px solid #33ff00;
+            border-radius: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-shadow: 0 0 5px #33ff00;
+            animation: btnGlow 5s infinite;
+        }
+        
+        @keyframes btnGlow {
+            0%, 100% { 
+                box-shadow: 0 0 15px #33ff00;
+            }
+            50% { 
+                box-shadow: 0 0 30px #33ff00, 0 0 45px #33ff00;
+            }
+        }
+        
+        .main-btn.red {
+            border-color: #ff3300;
+            color: #ff3300;
+            animation: btnGlowRed 5s infinite;
+        }
+        
+        @keyframes btnGlowRed {
+            0%, 100% { 
+                box-shadow: 0 0 15px #ff3300;
+            }
+            50% { 
+                box-shadow: 0 0 30px #ff3300, 0 0 45px #ff3300;
+            }
+        }
+        
+        #password-input {
+            margin-top: 30px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 25px;
+            border-radius: 12px;
+            border: 3px solid #ff3300;
+            box-shadow: 0 0 40px #ff3300;
+            animation: inputShake 0.5s infinite;
+        }
+        
+        @keyframes inputShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+            20%, 40%, 60%, 80% { transform: translateX(2px); }
+        }
+        
+        #pass-input {
+            padding: 15px;
+            font-size: 20px;
+            width: 100%;
+            max-width: 300px;
+            background: #000;
+            color: #33ff00;
+            border: 2px solid #33ff00;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-shadow: 0 0 5px #33ff00;
+        }
+        
+        /* ЭКРАН ИГР */
+        #game-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #0f0;
+            z-index: 10002;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .game-container {
+            padding: 20px;
+            padding-top: 100px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .game-title {
+            font-size: 24px;
+            color: #33ff00;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #33ff00;
+        }
+        
+        .game-progress {
+            color: #ffff00;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .game-question-box {
+            background: rgba(0, 20, 0, 0.3);
+            border: 2px solid #33ff00;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(51, 255, 0, 0.3);
+        }
+        
+        .game-question {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #00ffff;
+            min-height: 80px;
+        }
+        
+        .game-hint {
+            color: #888;
+            font-size: 14px;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(50, 50, 0, 0.3);
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .game-answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background: #000;
+            color: #33ff00;
+            border: 2px solid #33ff00;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+        
+        .game-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .game-btn {
+            padding: 15px;
+            font-size: 16px;
+            background: #111;
+            color: #33ff00;
+            border: 2px solid #33ff00;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .game-btn:hover {
+            background: #33ff00;
+            color: #000;
+        }
+        
+        .game-btn.red {
+            border-color: #ff3300;
+            color: #ff3300;
+        }
+        
+        .game-btn.red:hover {
+            background: #ff3300;
+            color: #000;
+        }
+        
+        .password-progress {
+            color: #ffff00;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            letter-spacing: 10px;
+        }
+        
+        /* УГРОЖАЮЩИЕ СООБЩЕНИЯ */
+        .threat-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 25px;
+            border: 4px solid #ff3300;
+            border-radius: 15px;
+            color: #ff3300;
+            font-size: 20px;
+            text-align: center;
+            z-index: 10000;
+            display: none;
+            max-width: 90%;
+            text-shadow: 0 0 5px #ff3300;
+            animation: threatPulse 0.5s infinite;
+            font-weight: bold;
+        }
+        
+        @keyframes threatPulse {
+            0%, 100% { 
+                box-shadow: 0 0 30px #ff3300;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 60px #ff3300;
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+        
+        /* ЭФФЕКТЫ */
+        .blink {
+            animation: blinkEffect 1s infinite;
+        }
+        
+        @keyframes blinkEffect {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .shake {
+            animation: shakeEffect 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes shakeEffect {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+            40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+        
+        /* ЭКРАН КОНЦА */
+        #end-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        #countdown {
+            font-size: 80px;
+            color: #ff3300;
+            margin: 30px 0;
+            text-shadow: 0 0 40px #ff3300;
+            animation: countdownPulse 1s infinite;
+            font-weight: bold;
+        }
+        
+        @keyframes countdownPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.3);
+                opacity: 0.7;
+            }
+        }
+        
+        #final-message {
+            font-size: 28px;
+            color: #ff3300;
+            text-align: center;
+            margin-top: 30px;
+            text-shadow: 0 0 20px #ff3300;
+            font-weight: bold;
+        }
+        
+        /* ЭКРАН ПОБЕДЫ */
+        #win-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            padding: 20px;
+        }
+        
+        /* МОБИЛЬНАЯ ОПТИМИЗАЦИЯ */
+        @media (max-width: 480px) {
+            #start-title {
+                font-size: 28px;
+            }
+            
+            .features {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .game-card {
+                padding: 15px;
+            }
+            
+            .boost-panel {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .boost-value {
+                font-size: 36px;
+            }
+            
+            #timer {
+                font-size: 36px;
+                letter-spacing: 3px;
+            }
+            
+            .main-btn {
+                padding: 15px;
+                font-size: 16px;
+            }
+            
+            #status {
+                font-size: 18px;
+            }
+            
+            .game-title {
+                font-size: 20px;
+            }
+            
+            .game-question {
+                font-size: 16px;
+            }
+            
+            .game-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .logo {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
+            }
+            
+            .logo-icon {
+                font-size: 40px;
+            }
+            
+            #start-title {
+                font-size: 24px;
+                margin-bottom: 5px;
+            }
+            
+            .subtitle {
+                margin-bottom: 20px;
+            }
+            
+            .features {
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ЗАСТАВКА -->
+    <div id="start-screen">
+        <div class="logo">
+            <div class="logo-icon">⚡</div>
+        </div>
+        
+        <div id="start-title">Game Boost Pro</div>
+        <div class="subtitle">Ускорение игр и оптимизация производительности</div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎮</div>
+                <div>Ускорение FPS в играх</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div>Оптимизация процессора</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔋</div>
+                <div>Экономия батареи</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🛡️</div>
+                <div>Безопасно и легально</div>
+            </div>
+        </div>
+        
+        <button id="start-btn">АКТИВИРОВАТЬ УСКОРЕНИЕ</button>
+        
+        <div class="disclaimer">
+            Game Boost Pro является официальным инструментом оптимизации производительности игр. Все функции безопасны и не нарушают правила игр.
+        </div>
+    </div>
+    
+    <!-- ОСНОВНОЙ ЭКРАН С ЧИТАМИ -->
+    <div id="main-screen">
+        <div class="header">
+            <div class="header-title">Game Boost Pro</div>
+            <div class="status-badge">АКТИВНО</div>
+        </div>
+        
+        <div class="games-list">
+            <div class="section-title">Популярные игры</div>
+            
+            <div class="game-card">
+                <div class="game-icon">PUBG</div>
+                <div class="game-info">
+                    <div class="game-name">PUBG Mobile</div>
+                    <div class="game-stats">Ускорение FPS: Доступно</div>
+                </div>
+                <div class="cheat-toggle" onclick="toggleCheat(this)">
+                    <div class="toggle-circle"></div>
+                </div>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">FF</div>
+                <div class="game-info">
+                    <div class="game-name">Free Fire</div>
+                    <div class="game-stats">Анти-бан: Активно</div>
+                </div>
+                <div class="cheat-toggle active" onclick="toggleCheat(this)">
+                    <div class="toggle-circle"></div>
+                </div>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">CODM</div>
+                <div class="game-info">
+                    <div class="game-name">COD Mobile</div>
+                    <div class="game-stats">Авто-прицел: Готово</div>
+                </div>
+                <div class="cheat-toggle" onclick="toggleCheat(this)">
+                    <div class="toggle-circle"></div>
+                </div>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">ML</div>
+                <div class="game-info">
+                    <div class="game-name">Mobile Legends</div>
+                    <div class="game-stats">Скины разблокированы</div>
+                </div>
+                <div class="cheat-toggle active" onclick="toggleCheat(this)">
+                    <div class="toggle-circle"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="boost-panel">
+            <div class="boost-title">Ускорение системы</div>
+            
+            <div class="boost-slider" id="boost-slider">
+                <div class="slider-handle" id="slider-handle"></div>
+            </div>
+            
+            <div class="boost-value" id="boost-value">50%</div>
+            
+            <button class="apply-btn" onclick="applyBoost()">ПРИМЕНИТЬ УСКОРЕНИЕ</button>
+        </div>
+    </div>
+    
+    <!-- ЭКРАН ВЗЛОМА -->
+    <div id="hack-screen">
+        <div id="file-delete">
+            <div class="terminal-line critical-line">[СИСТЕМА УСКОРЕНИЯ АКТИВИРОВАНА]</div>
+        </div>
+        
+        <div class="hack-header">
+            <div>SYSTEM BOOTSTRAP</div>
+            <div style="color: #f00; font-size: 12px;">[SECURE MODE]</div>
+        </div>
+        
+        <div class="terminal" id="terminal">
+            <div class="terminal-line">Initializing Game Boost Pro v3.2.1...</div>
+            <div class="terminal-line">Checking system compatibility...</div>
+            <div class="terminal-line success">✓ System: Android 11+ detected</div>
+            <div class="terminal-line">Loading optimization modules...</div>
+            <div class="terminal-line">Accessing game directories...</div>
+        </div>
+        
+        <div class="hack-progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="game-hacked" id="game-hacked" style="display: none;">
+            <div class="hacked-title">🎮 ИГРА ВЗЛОМАНА!</div>
+            <div class="hacked-message">
+                Все премиум-функции активированы!<br>
+                Теперь у вас есть:<br>
+                • Бесконечные ресурсы<br>
+                • Все скины разблокированы<br>
+                • Анти-бан защита<br>
+                • Максимальный FPS
+            </div>
+            <button class="continue-btn" onclick="finishHack()">ПРОДОЛЖИТЬ ИГРУ</button>
+        </div>
+    </div>
+    
+    <!-- ОСНОВНОЙ ЭКРАН УГРОЗЫ -->
+    <div id="main-hack-screen">
+        <div id="file-delete">
+            <div class="terminal-line critical-line">[КРИТИЧЕСКОЕ УДАЛЕНИЕ] Запущен процесс очистки...</div>
+        </div>
+        
+        <!-- УГРОЖАЮЩИЕ СООБЩЕНИЯ -->
+        <div id="threat-1" class="threat-message">
+            ⚠️ ПРЕДУПРЕЖДЕНИЕ: Неверный код!<br>
+            Следующая ошибка ускорит удаление!
+        </div>
+        
+        <div id="threat-2" class="threat-message">
+            🚨 КРИТИЧЕСКАЯ ОШИБКА!<br>
+            Система заподозрила взлом!
+        </div>
+        
+        <div id="threat-3" class="threat-message">
+            💀 ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ!<br>
+            Следующая ошибка активирует экстренный режим!
+        </div>
+        
+        <div id="content">
+            <div id="status">⚠️ ОБНАРУЖЕНА КРИТИЧЕСКАЯ АТАКА НА СИСТЕМУ</div>
+            
+            <div id="timer-container">
+                <div id="timer-label">ДО УДАЛЕНИЯ СИСТЕМНЫХ ДАННЫХ:</div>
+                <div id="timer">30:00</div>
+            </div>
+            
+            <div style="color: #ffff00; margin: 20px 0; font-size: 16px; line-height: 1.5; font-weight: bold;">
+                ⚠️ Обнаружен вредоносный код в системе<br>
+                ⚠️ Автоматическое удаление активировано<br>
+                ⚠️ Требуется аварийный код для остановки
+            </div>
+            
+            <div class="buttons">
+                <button class="main-btn red" onclick="showPasswordInput()">
+                    🔐 ВВЕСТИ КОД ОТМЕНЫ
+                </button>
+                <button class="main-btn" onclick="startGames()">
+                    🎮 ПРОЙТИ ИСПЫТАНИЯ (10/48)
+                </button>
+            </div>
+            
+            <div id="password-input">
+                <input type="password" id="pass-input" placeholder="ВВЕДИТЕ 9-ЗНАЧНЫЙ КОД" autocomplete="off">
+                <div style="display: flex; gap: 10px; margin-top: 20px; width: 100%;">
+                    <button class="main-btn" style="flex: 1; font-size: 14px; padding: 12px;" onclick="checkPassword()">ПОДТВЕРДИТЬ</button>
+                    <button class="main-btn" style="flex: 1; font-size: 14px; padding: 12px;" onclick="hidePasswordInput()">ОТМЕНА</button>
+                </div>
+                <div id="attempts-warning" style="color: #ffff00; margin-top: 15px; font-size: 14px; font-weight: bold;"></div>
+            </div>
+            
+            <div style="color: #ff3300; margin-top: 30px; font-size: 14px; font-weight: bold;">
+                Система: Android | Удалено: 47% файлов | Время: <span id="current-time">30:00</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ЭКРАН ИГР -->
+    <div id="game-screen">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="game-title" id="game-title">КРИПТОГРАФИЧЕСКОЕ ИСПЫТАНИЕ</div>
+                <div class="game-progress" id="game-progress">Испытание 1 из 10</div>
+            </div>
+            
+            <div class="game-question-box">
+                <div class="game-question" id="game-question">Загрузка вопроса...</div>
+                <div class="game-hint" id="game-hint"></div>
+            </div>
+            
+            <input type="text" class="game-answer-input" id="game-answer" placeholder="ВВЕДИТЕ ОТВЕТ" autocomplete="off">
+            
+            <div class="game-buttons">
+                <button class="game-btn" onclick="checkGameAnswer()">✅ ПРОВЕРИТЬ ОТВЕТ</button>
+                <button class="game-btn" onclick="showHint()">💡 ПОКАЗАТЬ ПОДСКАЗКУ (-30с)</button>
+                <button class="game-btn red" onclick="skipQuestion()">⏭️ ПРОПУСТИТЬ ВОПРОС</button>
+                <button class="game-btn red" onclick="exitGames()">🚪 ВЫЙТИ ИЗ ИГР</button>
+            </div>
+            
+            <div class="password-progress" id="password-progress">
+                КОД: █ █ █ █ █ █ █ █ █
+            </div>
+        </div>
+    </div>
+    
+    <!-- ЭКРАН КОНЦА -->
+    <div id="end-screen">
+        <div id="countdown">3</div>
+        <div id="final-message">СИСТЕМНЫЕ ДАННЫЕ УДАЛЕНЫ</div>
+    </div>
+    
+    <!-- ЭКРАН ПОБЕДЫ -->
+    <div id="win-screen">
+        <div style="font-size: 32px; color: #33ff00; text-shadow: 0 0 20px #33ff00; text-align: center; font-weight: bold;">
+            🎉 СИСТЕМА СПАСЕНА 🎉
+        </div>
+        <div style="color: #00ffff; margin: 30px 0; font-size: 20px; text-align: center; font-weight: bold;">
+            АВАРИЙНЫЙ КОД ДЛЯ ОСТАНОВКИ:
+        </div>
+        <div id="final-password" style="font-size: 40px; color: #33ff00; letter-spacing: 10px; margin: 40px 0; text-shadow: 0 0 30px #33ff00; font-family: monospace; padding: 30px; border: 5px solid #33ff00; border-radius: 20px; background: rgba(0, 20, 0, 0.8); animation: btnGlow 3s infinite; font-weight: bold;"></div>
+        <button class="main-btn" onclick="restartApp()" style="margin-top: 40px; font-size: 20px; padding: 20px 40px;">
+            🔄 НАЧАТЬ ЗАНОВО
+        </button>
+        <div style="color: #888; margin-top: 30px; font-size: 14px; text-align: center; font-weight: bold; max-width: 300px;">
+            Это был прикол! 😊<br>Никакие данные не удалены.
+        </div>
+    </div>
+
+    <script>
+        // ========== КОНСТАНТЫ ==========
+        const FINAL_PASSWORD = "BOOST9GAME";
+        const TOTAL_QUESTIONS = 10;
+        
+        // ========== БАЗА ВОПРОСОВ (48 вопросов) ==========
+        const QUESTIONS_DATABASE = [
+            // 1-12: Логические загадки
+            {
+                type: "logic",
+                question: "Что можно сломать, даже не прикоснувшись к нему?",
+                answer: "молчание",
+                hint: "Это нарушается громким звуком"
+            },
+            {
+                type: "logic", 
+                question: "Я исчезаю, как только меня называют. Что я?",
+                answer: "тишина",
+                hint: "Противоположность шуму"
+            },
+            {
+                type: "logic",
+                question: "Что принадлежит тебе, но другие используют чаще?",
+                answer: "имя",
+                hint: "Тебя так называют другие люди"
+            },
+            {
+                type: "logic",
+                question: "Что идёт вверх и вниз, но не двигается?",
+                answer: "лестница",
+                hint: "По ней поднимаются и спускаются"
+            },
+            {
+                type: "logic",
+                question: "Чем больше берёшь, тем больше оставляешь. Что это?",
+                answer: "шаги",
+                hint: "Остаются следы"
+            },
+            {
+                type: "logic",
+                question: "Что становится мокрым, пока сохнет?",
+                answer: "полотенце",
+                hint: "Им вытираются"
+            },
+            {
+                type: "logic",
+                question: "Что имеет ключ, но не может открыть замок?",
+                answer: "клавиатура",
+                hint: "На ней есть клавиши"
+            },
+            {
+                type: "logic",
+                question: "Что можно держать в правой руке, но нельзя в левой?",
+                answer: "левый локоть",
+                hint: "Попробуйте дотянуться"
+            },
+            {
+                type: "logic",
+                question: "Что имеет корни, но не растёт; имеет кору, но не дерево?",
+                answer: "книга",
+                hint: "Корни - происхождение, кора - обложка"
+            },
+            {
+                type: "logic",
+                question: "Что становится больше, если его поставить вверх ногами?",
+                answer: "6",
+                hint: "Цифра 6 превращается в 9"
+            },
+            {
+                type: "logic",
+                question: "Какое слово всегда пишется неправильно?",
+                answer: "неправильно",
+                hint: "Парадоксальное слово"
+            },
+            {
+                type: "logic",
+                question: "Что имеет кольца, но нет пальцев?",
+                answer: "телефон",
+                hint: "Старый телефон с диском"
+            },
+            
+            // 13-24: Математические задачи
+            {
+                type: "math",
+                question: "Если 3 кошки ловят 3 мыши за 3 минуты, сколько нужно 100 кошкам для 100 мышей?",
+                answer: "3",
+                hint: "Каждая кошка ловит 1 мышь за 3 минуты"
+            },
+            {
+                type: "math",
+                question: "Отцу и сыну вместе 66 лет. Возраст отца - возраст сына наоборот. Сколько лет каждому?",
+                answer: "51 и 15",
+                hint: "51 + 15 = 66, 51 наоборот 15"
+            },
+            {
+                type: "math", 
+                question: "Что тяжелее: килограмм железа или килограмм ваты?",
+                answer: "одинаково",
+                hint: "Килограмм есть килограмм"
+            },
+            {
+                type: "math",
+                question: "На озере лилии. Каждый день их количество удваивается. На 20-й день озеро покрыто полностью. На какой день половина?",
+                answer: "19",
+                hint: "Если удваивается каждый день, то за день до полного покрытия - половина"
+            },
+            {
+                type: "math",
+                question: "5 + 5 + 5 = 550. Добавь одну черту, чтобы равенство стало верным.",
+                answer: "545+5=550",
+                hint: "Добавь черту к первому плюсу, чтобы получилось 4"
+            },
+            {
+                type: "math",
+                question: "Сколько раз от 100 можно отнять 10?",
+                answer: "1",
+                hint: "После первого вычитания получится 90"
+            },
+            {
+                type: "math",
+                question: "Два отца и два сына съели 3 яблока. Каждому досталось по целому яблоку. Как?",
+                answer: "дед, отец, сын",
+                hint: "Это три человека: дед (отец отца), отец (сын деда и отец сына), сын"
+            },
+            {
+                type: "math",
+                question: "Чему равно: 1/2 от 2/3 от 3/4 от 4/5 от 5/6 от 6/7 от 7/8 от 8/9 от 9/10 от 1000?",
+                answer: "100",
+                hint: "Последовательно сокращаются дроби"
+            },
+            {
+                type: "math",
+                question: "Сколько месяцев в году имеют 28 дней?",
+                answer: "12",
+                hint: "Все месяцы имеют как минимум 28 дней"
+            },
+            {
+                type: "math",
+                question: "Если электричка едет со скоростью 80 км/ч, а ветер дует навстречу со скоростью 20 км/ч, с какой скоростью летит дым?",
+                answer: "0",
+                hint: "У электрички нет дыма"
+            },
+            {
+                type: "math",
+                question: "У квадратного стола отпилили один угол. Сколько теперь углов?",
+                answer: "5",
+                hint: "После отпиливания получается пятиугольник"
+            },
+            {
+                type: "math", 
+                question: "Что имеет 4 пальца и большой палец, но не является живым?",
+                answer: "перчатка",
+                hint: "Надевается на руку"
+            },
+            
+            // 25-36: Физические задачи
+            {
+                type: "physics",
+                question: "Что падает вниз, но никогда не поднимается?",
+                answer: "дождь",
+                hint: "Осадки из облаков"
+            },
+            {
+                type: "physics",
+                question: "Что идёт вверх, когда дождь идёт вниз?",
+                answer: "зонт",
+                hint: "Его раскрывают над головой"
+            },
+            {
+                type: "physics",
+                question: "Что можно увидеть с закрытыми глазами?",
+                answer: "сон",
+                hint: "Видения во время сна"
+            },
+            {
+                type: "physics",
+                question: "Что становится горячее, если его положить в холодильник?",
+                answer: "перец",
+                hint: "Острый перец - его 'жар' не температура"
+            },
+            {
+                type: "physics",
+                question: "Что летает без крыльев, плачет без глаз?",
+                answer: "облако",
+                hint: "Из него идёт дождь"
+            },
+            {
+                type: "physics",
+                question: "Что имеет начало, но не имеет конца?",
+                answer: "окружность",
+                hint: "Геометрическая фигура"
+            },
+            {
+                type: "physics",
+                question: "Что может путешествовать вокруг света, оставаясь в углу?",
+                answer: "почтовая марка",
+                hint: "На конверте в углу"
+            },
+            {
+                type: "physics",
+                question: "Что всегда перед тобой, но невидимо?",
+                answer: "будущее",
+                hint: "То, что ещё не наступило"
+            },
+            {
+                type: "physics",
+                question: "Что можно разбить, даже не касаясь?",
+                answer: "обещание",
+                hint: "Можно не сдержать слово"
+            },
+            {
+                type: "physics",
+                question: "Что имеет 88 ключей, но не может открыть ни одну дверь?",
+                answer: "пианино",
+                hint: "Музыкальный инструмент"
+            },
+            {
+                type: "physics",
+                question: "Что имеет города, но нет домов; имеет леса, но нет деревьев; имеет реки, но нет воды?",
+                answer: "карта",
+                hint: "Географическая карта"
+            },
+            {
+                type: "physics",
+                question: "Что становится меньше, когда его переворачиваешь вверх ногами?",
+                answer: "8",
+                hint: "Цифра 8 превращается в бесконечность ∞"
+            },
+            
+            // 37-48: Шифры и коды
+            {
+                type: "cipher",
+                question: "Расшифруйте шифр Цезаря (сдвиг 3): ФХУИРП",
+                answer: "цената",
+                hint: "А→Г, Б→Д, В→Е и т.д."
+            },
+            {
+                type: "cipher",
+                question: "Двоичный код: 01000001 01000100 01001101 01001001 01001110",
+                answer: "admin",
+                hint: "A=65=01000001 в ASCII"
+            },
+            {
+                type: "cipher",
+                question: "Морзянка: .--. .- .-. --- .-.. ..",
+                answer: "paroli",
+                hint: ".-- = П, .- = А"
+            },
+            {
+                type: "cipher",
+                question: "Шифр Атбаш (алфавит наоборот): ГИВХ",
+                answer: "трое",
+                hint: "А↔Я, Б↔Ю, В↔Э и т.д."
+            },
+            {
+                type: "cipher",
+                question: "Base64: Qm9vc3RQcm8=",
+                answer: "boostpro",
+                hint: "Декодируйте base64"
+            },
+            {
+                type: "cipher",
+                question: "Шифр перестановки: ОИКД",
+                answer: "коди",
+                hint: "Переставьте буквы"
+            },
+            {
+                type: "cipher",
+                question: "ROT13: Obbfg9Tnxr",
+                answer: "boost9game",
+                hint: "A→N, B→O, C→P и т.д."
+            },
+            {
+                type: "cipher",
+                question: "Шестнадцатеричный код: 42 4F 4F 53 54",
+                answer: "boost",
+                hint: "42=B, 4F=O, 4F=O, 53=S, 54=T"
+            },
+            {
+                type: "cipher",
+                question: "Анаграмма: БУСТООСТ",
+                answer: "субтотос",
+                hint: "Переставьте буквы"
+            },
+            {
+                type: "cipher",
+                question: "Шифр с ключом 'GAME': XQTWK",
+                answer: "взлом",
+                hint: "G=6, A=0, M=12, E=4"
+            },
+            {
+                type: "cipher",
+                question: "Палиндром: Найди слово, которое читается одинаково с обеих сторон",
+                answer: "топот",
+                hint: "Пример: шалаш, казак"
+            },
+            {
+                type: "cipher",
+                question: "Ребус: 100ЛИЦА",
+                answer: "столица",
+                hint: "100 = СТО"
+            }
+        ];
+
+        // ========== ПЕРЕМЕННЫЕ ==========
+        let totalTime = 30 * 60;
+        let timerInterval;
+        let wrongAttempts = 0;
+        let currentQuestion = 0;
+        let collectedChars = [];
+        let isHackActive = false;
+        let boostValue = 50;
+        let isDragging = false;
+        let usedQuestions = new Set();
+        let currentQuestionData = null;
+        
+        // ========== ЗАПУСК ПРИЛОЖЕНИЯ ==========
+        function startApp() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('main-screen').style.display = 'block';
+            
+            // Настройка слайдера
+            const slider = document.getElementById('boost-slider');
+            const handle = document.getElementById('slider-handle');
+            const valueDisplay = document.getElementById('boost-value');
+            
+            slider.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                isDragging = true;
+                updateSlider(e.touches[0].clientX);
+            });
+            
+            document.addEventListener('touchmove', function(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    updateSlider(e.touches[0].clientX);
+                }
+            });
+            
+            document.addEventListener('touchend', function() {
+                isDragging = false;
+            });
+            
+            function updateSlider(clientX) {
+                const rect = slider.getBoundingClientRect();
+                let x = clientX - rect.left;
+                x = Math.max(0, Math.min(x, rect.width));
+                
+                const percent = (x / rect.width) * 100;
+                boostValue = Math.round(percent);
+                
+                handle.style.left = percent + '%';
+                valueDisplay.textContent = boostValue + '%';
+            }
+        }
+        
+        // ========== ПЕРЕКЛЮЧАТЕЛЬ ЧИТОВ ==========
+        function toggleCheat(element) {
+            element.classList.toggle('active');
+            
+            if (element.classList.contains('active')) {
+                element.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    element.style.transform = 'scale(1)';
+                }, 300);
+            }
+        }
+        
+        // ========== ПРИМЕНЕНИЕ БУСТА ==========
+        function applyBoost() {
+            if (isHackActive) return;
+            isHackActive = true;
+            
+            document.getElementById('main-screen').style.display = 'none';
+            document.getElementById('hack-screen').style.display = 'block';
+            
+            startHackAnimation();
+        }
+        
+        function startHackAnimation() {
+            const progressBar = document.getElementById('progress-bar');
+            const terminal = document.getElementById('terminal');
+            const fileDelete = document.getElementById('file-delete');
+            
+            const messages = [
+                "[СИСТЕМА УСКОРЕНИЯ] Запуск оптимизации...",
+                "[ПРОВЕРКА] Анализ игровых файлов...",
+                "[ДОСТУП] Получение root-прав...",
+                "[ПРЕДУПРЕЖДЕНИЕ] Обнаружена защита...",
+                "[ОБХОД] Взлом анти-чита...",
+                "[МОДИФИКАЦИЯ] Изменение game.so...",
+                "[УСТАНОВКА] Внедрение читов...",
+                "[ШИФРОВАНИЕ] Скрытие следов...",
+                "[ГОТОВО] Все читы активированы!"
+            ];
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 2;
+                progressBar.style.width = progress + '%';
+                
+                if (progress % 20 === 0) {
+                    const msgIndex = Math.floor(progress / 20) - 1;
+                    if (msgIndex < messages.length) {
+                        const line = document.createElement('div');
+                        line.className = 'terminal-line ' + 
+                            (progress > 70 ? 'warning' : 
+                             progress > 40 ? 'error' : 'success');
+                        line.textContent = messages[msgIndex];
+                        terminal.appendChild(line);
+                        terminal.scrollTop = terminal.scrollHeight;
+                        
+                        const fileLine = document.createElement('div');
+                        fileLine.className = 'terminal-line ' + 
+                            (progress > 70 ? 'critical-line' : '');
+                        fileLine.textContent = messages[msgIndex];
+                        fileDelete.appendChild(fileLine);
+                        fileDelete.scrollTop = fileDelete.scrollHeight;
+                    }
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('game-hacked').style.display = 'block';
+                    }, 500);
+                }
+            }, 100);
+        }
+        
+        // ========== ЗАВЕРШЕНИЕ ВЗЛОМА ==========
+        function finishHack() {
+            document.getElementById('hack-screen').style.display = 'none';
+            document.getElementById('main-hack-screen').style.display = 'block';
+            
+            startTerminal();
+            startTimer();
+            startScaryEffects();
+        }
+        
+        // ========== ТЕРМИНАЛ УДАЛЕНИЯ ==========
+        function startTerminal() {
+            const container = document.getElementById('file-delete');
+            const phoneFiles = [
+                "DCIM/Camera/photo_001.jpg",
+                "DCIM/Camera/photo_002.jpg",
+                "DCIM/Screenshots/screen_001.png",
+                "Download/document.pdf",
+                "Music/song.mp3",
+                "Video/video_001.mp4",
+                "WhatsApp/Media/photo.jpg",
+                "Telegram/telegram_image.jpg",
+                "Android/data/com.game/files",
+                "Pictures/Wallpapers/wallpaper.jpg",
+                "Documents/notes.txt",
+                "Contacts/contacts.vcf",
+                "Messages/sms_backup.db",
+                "Call_logs/calls.db",
+                "Calendar/events.ics"
+            ];
+            
+            let index = 0;
+            function addFileMessage() {
+                if (index < phoneFiles.length) {
+                    const line = document.createElement('div');
+                    line.className = 'terminal-line ' + 
+                        (Math.random() > 0.7 ? 'critical-line' : '');
+                    line.textContent = `[УДАЛЕНО] /storage/emulated/0/${phoneFiles[index]}`;
+                    container.appendChild(line);
+                    
+                    if (container.children.length > 8) {
+                        container.removeChild(container.firstChild);
+                    }
+                    
+                    container.scrollTop = container.scrollHeight;
+                    
+                    index++;
+                    setTimeout(addFileMessage, 800 + Math.random() * 800);
+                }
+            }
+            addFileMessage();
+        }
+        
+        // ========== ТАЙМЕР ==========
+        function startTimer() {
+            updateTimer();
+            
+            timerInterval = setInterval(() => {
+                if (totalTime <= 0) {
+                    endApp();
+                    return;
+                }
+                
+                totalTime--;
+                updateTimer();
+                
+                if (totalTime === 60) {
+                    showThreat(1);
+                } else if (totalTime === 30) {
+                    showThreat(2);
+                } else if (totalTime === 10) {
+                    showThreat(3);
+                }
+            }, 1000);
+        }
+        
+        function updateTimer() {
+            const mins = Math.floor(totalTime / 60);
+            const secs = totalTime % 60;
+            const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('timer').textContent = timeStr;
+            document.getElementById('current-time').textContent = timeStr;
+        }
+        
+        // ========== УГРОЗЫ ==========
+        function showThreat(number) {
+            const threat = document.getElementById(`threat-${number}`);
+            threat.style.display = 'block';
+            
+            setTimeout(() => {
+                threat.style.display = 'none';
+            }, 3000);
+        }
+        
+        // ========== ПАРОЛЬ ==========
+        function showPasswordInput() {
+            document.getElementById('password-input').style.display = 'flex';
+            document.querySelector('.buttons').style.display = 'none';
+            document.getElementById('pass-input').focus();
+        }
+        
+        function hidePasswordInput() {
+            document.getElementById('password-input').style.display = 'none';
+            document.querySelector('.buttons').style.display = 'flex';
+            document.getElementById('pass-input').value = '';
+            document.getElementById('attempts-warning').textContent = '';
+        }
+        
+        function checkPassword() {
+            const input = document.getElementById('pass-input').value.trim().toLowerCase();
+            
+            if (input === FINAL_PASSWORD.toLowerCase()) {
+                showVictory();
+                return;
+            }
+            
+            wrongAttempts++;
+            
+            let penalty = 0;
+            if (wrongAttempts === 1) {
+                penalty = 30;
+                showThreat(1);
+            } else if (wrongAttempts === 2) {
+                penalty = 60;
+                showThreat(2);
+            } else {
+                penalty = 120;
+                showThreat(3);
+            }
+            
+            totalTime = Math.max(0, totalTime - penalty);
+            
+            const warning = document.getElementById('attempts-warning');
+            warning.textContent = `❌ НЕВЕРНО! -${penalty} секунд! Попыток: ${wrongAttempts}`;
+            warning.style.color = '#ff3300';
+            
+            document.getElementById('pass-input').style.borderColor = '#ff3300';
+            setTimeout(() => {
+                document.getElementById('pass-input').style.borderColor = '#33ff00';
+                document.getElementById('pass-input').value = '';
+            }, 500);
+        }
+        
+        // ========== ИГРЫ ==========
+        function startGames() {
+            currentQuestion = 0;
+            collectedChars = [];
+            usedQuestions.clear();
+            
+            document.getElementById('main-hack-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            
+            loadRandomQuestion();
+        }
+        
+        function loadRandomQuestion() {
+            if (currentQuestion >= TOTAL_QUESTIONS) {
+                completeGames();
+                return;
+            }
+            
+            // Выбираем случайный неиспользованный вопрос
+            let availableQuestions = [];
+            for (let i = 0; i < QUESTIONS_DATABASE.length; i++) {
+                if (!usedQuestions.has(i)) {
+                    availableQuestions.push(i);
+                }
+            }
+            
+            // Если все вопросы использованы, сбрасываем
+            if (availableQuestions.length === 0) {
+                usedQuestions.clear();
+                availableQuestions = [...Array(QUESTIONS_DATABASE.length).keys()];
+            }
+            
+            const randomIndex = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+            usedQuestions.add(randomIndex);
+            
+            currentQuestionData = QUESTIONS_DATABASE[randomIndex];
+            
+            // Обновляем интерфейс
+            document.getElementById('game-title').textContent = 
+                `ИСПЫТАНИЕ ${getTypeName(currentQuestionData.type)}`;
+            document.getElementById('game-progress').textContent = 
+                `Вопрос ${currentQuestion + 1} из ${TOTAL_QUESTIONS}`;
+            document.getElementById('game-question').textContent = 
+                currentQuestionData.question;
+            document.getElementById('game-hint').textContent = '';
+            document.getElementById('game-hint').style.display = 'none';
+            document.getElementById('game-answer').value = '';
+            
+            updatePasswordProgress();
+        }
+        
+        function getTypeName(type) {
+            const names = {
+                'logic': 'ЛОГИКА',
+                'math': 'МАТЕМАТИКА',
+                'physics': 'ФИЗИКА',
+                'cipher': 'ШИФРЫ'
+            };
+            return names[type] || 'ОБЩЕЕ';
+        }
+        
+        function checkGameAnswer() {
+            const input = document.getElementById('game-answer').value.trim().toLowerCase();
+            const answer = currentQuestionData.answer.toLowerCase();
+            
+            if (input === answer) {
+                // Получаем символ кода
+                const char = FINAL_PASSWORD[currentQuestion];
+                collectedChars.push(char);
+                
+                // Показываем успех
+                document.getElementById('game-hint').innerHTML = 
+                    `<span style="color:#33ff00">✅ ВЕРНО! Получен символ: ${char}</span>`;
+                document.getElementById('game-hint').style.display = 'block';
+                
+                currentQuestion++;
+                
+                if (currentQuestion >= TOTAL_QUESTIONS) {
+                    setTimeout(completeGames, 2000);
+                } else {
+                    setTimeout(() => {
+                        document.getElementById('game-question').textContent = 'Загрузка следующего вопроса...';
+                        setTimeout(loadRandomQuestion, 1500);
+                    }, 2000);
+                }
+            } else {
+                document.getElementById('game-hint').innerHTML = 
+                    `<span style="color:#ff3300">❌ НЕПРАВИЛЬНО! Попробуйте ещё раз.</span>`;
+                document.getElementById('game-hint').style.display = 'block';
+                
+                // Штраф за ошибку
+                totalTime = Math.max(0, totalTime - 30);
+            }
+            
+            updatePasswordProgress();
+        }
+        
+        function showHint() {
+            if (currentQuestionData && currentQuestionData.hint) {
+                document.getElementById('game-hint').innerHTML = 
+                    `<span style="color:#ffff00">💡 ПОДСКАЗКА: ${currentQuestionData.hint}</span>`;
+                document.getElementById('game-hint').style.display = 'block';
+                
+                // Штраф за подсказку
+                totalTime = Math.max(0, totalTime - 30);
+            }
+        }
+        
+        function skipQuestion() {
+            // Большой штраф за пропуск
+            totalTime = Math.max(0, totalTime - 60);
+            currentQuestion++;
+            
+            if (currentQuestion >= TOTAL_QUESTIONS) {
+                completeGames();
+            } else {
+                loadRandomQuestion();
+            }
+        }
+        
+        function exitGames() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('main-hack-screen').style.display = 'block';
+        }
+        
+        function completeGames() {
+            // Если собраны все символы
+            if (collectedChars.length >= TOTAL_QUESTIONS) {
+                showVictory();
+            } else {
+                alert(`Вы прошли ${collectedChars.length} из ${TOTAL_QUESTIONS} вопросов. Собран код: ${collectedChars.join('')}`);
+                exitGames();
+            }
+        }
+        
+        function updatePasswordProgress() {
+            let progress = '';
+            for (let i = 0; i < FINAL_PASSWORD.length; i++) {
+                if (i < collectedChars.length) {
+                    progress += collectedChars[i] + ' ';
+                } else {
+                    progress += '█ ';
+                }
+            }
+            document.getElementById('password-progress').textContent = `КОД: ${progress}`;
+        }
+        
+        // ========== ЭФФЕКТЫ ==========
+        function startScaryEffects() {
+            setInterval(() => {
+                if (Math.random() > 0.9 && totalTime < 10 * 60) {
+                    document.body.classList.add('shake');
+                    setTimeout(() => document.body.classList.remove('shake'), 500);
+                }
+            }, 5000);
+        }
+        
+        // ========== КОНЕЦ ==========
+        function endApp() {
+            clearInterval(timerInterval);
+            
+            document.getElementById('main-hack-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'flex';
+            
+            let count = 3;
+            document.getElementById('countdown').textContent = count;
+            
+            const countdown = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    document.getElementById('countdown').textContent = count;
+                } else {
+                    clearInterval(countdown);
+                    document.getElementById('countdown').textContent = "0";
+                    document.getElementById('final-message').textContent = "ВСЕ ДАННЫЕ УДАЛЕНЫ";
+                    
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                }
+            }, 1000);
+        }
+        
+        // ========== ПОБЕДА ==========
+        function showVictory() {
+            clearInterval(timerInterval);
+            
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('main-hack-screen').style.display = 'none';
+            document.getElementById('win-screen').style.display = 'flex';
+            document.getElementById('final-password').textContent = FINAL_PASSWORD;
+        }
+        
+        // ========== РЕСТАРТ ==========
+        function restartApp() {
+            location.reload();
+        }
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        document.getElementById('start-btn').addEventListener('click', startApp);
+        
+        // Защита от выхода
+        window.onbeforeunload = function() {
+            if (isHackActive) {
+                return "⚠️ ВНИМАНИЕ: Процесс взлома активен!";
+            }
+        };
+        
+        // Блокировка клавиш
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+                alert("⚠️ Инструменты разработчика отключены!");
+            }
+        });
+        
+        // Блокировка контекстного меню
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>
